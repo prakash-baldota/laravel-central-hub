@@ -3,9 +3,9 @@ namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
+use App\Helpers\ApiResponse;
+use App\Http\Requests\UserRequest;
 class UserController extends Controller
 {
     // Index method to list users (optional)
@@ -16,15 +16,8 @@ class UserController extends Controller
     }
 
     // Store method to create a new user
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-        // Validate the incoming request data
-        $request->validate([
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
         // Create the user
         $user = User::create([
             'first_name' => $request->first_name,
@@ -36,12 +29,8 @@ class UserController extends Controller
             'status' => 'Active', 
             'user_type' => 'User',
         ]);
-
         // Return the user details in JSON format
-        return response()->json([
-            'message' => 'User created successfully',
-            'user' => $user,
-        ], 201);
+        return ApiResponse::success('User created successfully', $user, 201);
     }
 
     // Show method to get a specific user by ID
@@ -52,18 +41,10 @@ class UserController extends Controller
     }
 
     // Update method to update user data
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
         // Find user by ID
         $user = User::findOrFail($id);
-
-        // Validate incoming request
-        $request->validate([
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
 
         // Update user data
         $user->update([
@@ -72,12 +53,8 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => $request->password ? Hash::make($request->password) : $user->password, // Update password if provided
         ]);
-
         // Return the updated user data
-        return response()->json([
-            'message' => 'User updated successfully',
-            'user' => $user,
-        ]);
+        return ApiResponse::success('User updated successfully', $user, 200);
     }
 
     // Destroy method to delete a user

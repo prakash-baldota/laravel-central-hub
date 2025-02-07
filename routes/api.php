@@ -20,5 +20,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::post('/authenticate', [AuthController::class, 'authenticate']);
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
-Route::middleware('auth:sanctum')->resource('users', UserController::class);
-Route::middleware('auth:sanctum')->post('/create-user', [UserController::class, 'createUser']);
+Route::middleware('auth:sanctum')->group( function () {
+    Route::resource('users', UserController::class);
+});

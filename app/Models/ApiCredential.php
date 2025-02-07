@@ -14,6 +14,8 @@ class ApiCredential extends Model
         'username',
         'password',
         'status',
+        'refresh_token',
+        'last_used_at'
     ];
 
     // If you're using hashed passwords
