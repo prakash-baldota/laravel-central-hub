@@ -18,8 +18,11 @@ use App\Http\Controllers\API\User\UserController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::post('/authenticate', [AuthController::class, 'authenticate']);
-Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
-Route::middleware('auth:sanctum')->group( function () {
-    Route::resource('users', UserController::class);
+// Version 1 API collections
+Route::prefix('v1')->group(function () {
+    Route::post('/authenticate', [AuthController::class, 'authenticate']);
+    Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
+    Route::middleware('auth:sanctum')->group( function () {
+        Route::resource('users', UserController::class);
+    });
 });
